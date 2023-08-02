@@ -2,11 +2,10 @@
 
 # ---------------------------------------------------------------------------------------------------------------------
 # IMPORTS
-import geopandas as gpd
 import pandas as pd
 
 # ---------------------------------------------------------------------------------------------------------------------
-# READ FILES
+# READ DATA FILES
 
 Car_van = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts045-lsoa.csv')
@@ -63,6 +62,9 @@ Religion = pd.read_csv(
 Tenure = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts054-lsoaTenure.csv')
 
+IMD = pd.read_csv(
+    r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/File_7_-_All_IoD2019_Scores__Ranks'
+    r'__Deciles_and_Population_Denominators_3.csv')
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ARCPRO EXTRACTED ROWS TO BE USED IN FILTERING DATA TO APPROPRIATE AREAS
@@ -72,7 +74,7 @@ BuffLSOA = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/BuffLSOAs.csv')
 
 # ---------------------------------------------------------------------------------------------------------------------
-# WRITE FUNCTION
+# DEFINE FUNCTIONS
 def census_stats(data, proj, resultfile, section, all, v1, t1, v2, t2, v3, t3, v4, t4, v5=None, t5=None, v6=None,
                  t6=None, v7=None, t7=None, v8=None, t8=None, v9=None, t9=None, v10=None, t10=None, v11=None, t11=None,
                  v12=None, t12=None, v13=None, t13=None, v14=None, t14=None, v15=None, t15=None, v16=None, t16=None,
@@ -368,11 +370,188 @@ def census_stats(data, proj, resultfile, section, all, v1, t1, v2, t2, v3, t3, v
     results = updatedresults
     return results
 
+
+def IMD_stats(data, proj, buffer1, buffer2, alltotal, v1, t1, v2, t2, v3, t3, v4, t4, v5=None, t5=None, v6=None,
+              t6=None, v7=None, t7=None, v8=None, t8=None, v9=None, t9=None, v10=None, t10=None, v11=None, t11=None,
+              v12=None, t12=None, v13=None, t13=None, v14=None, t14=None, v15=None, t15=None, v16=None, t16=None,
+              v17=None, t17=None, v18=None, t18=None, v19=None, t19=None, v20=None, t20=None):
+    """
+    Given a dataset containing up to 20 variables, a dataframe of LSOAs based on a project area and a dataframe of LSOAs
+    based on a buffer area, calculate average IMD deciles for the defined area.
+    :param data: dataframe
+        Dataframe containing the national dataset
+    :param proj: dataframe
+        Dataframe containing the LSOAs for the project area
+    :param buffer1: dataframe
+        Dataframe containing the LSOAs for the buffer area
+    :param buffer2: dataframe
+        Dataframe containing the LSOAs for the second buffer area
+    :param alltotal: data column
+        Name of column within "data" containing the totals for the dataset
+    :param v1-20: variable column names
+    :param t1-20: text to be used in column heading output relating to the variables defined
+    :return: average deciles
+        dataframe containing averages calculated
+    """
+
+    # FILTER TO PROJECT AREA
+    ProjData = proj.join(data.set_index('LSOA code (2011)'), on='LSOA21CD', how='left',
+                               validate='one_to_one')
+
+    # ALL DATA AVERAGES
+    Sum1 = {'Area name': ['Project area']}
+    Summary = pd.DataFrame(Sum1)
+    Summary['Mean IMD Decile'] = ProjData['{}'.format(alltotal)].mean()
+    if v1:
+        Summary['{}'.format(t1)] = ProjData['{}'.format(v1)].mean()
+    if v2:
+        Summary['{}'.format(t2)] = ProjData['{}'.format(v2)].mean()
+    if v3:
+        Summary['{}'.format(t3)] = ProjData['{}'.format(v3)].mean()
+    if v4:
+        Summary['{}'.format(t4)] = ProjData['{}'.format(v4)].mean()
+    if v5:
+        Summary['{}'.format(t5)] = ProjData['{}'.format(v5)].mean()
+    if v6:
+        Summary['{}'.format(t6)] = ProjData['{}'.format(v6)].mean()
+    if v7:
+        Summary['{}'.format(t7)] = ProjData['{}'.format(v7)].mean()
+    if v8:
+        Summary['{}'.format(t8)] = ProjData['{}'.format(v8)].mean()
+    if v9:
+        Summary['{}'.format(t9)] = ProjData['{}'.format(v9)].mean()
+    if v10:
+        Summary['{}'.format(t10)] = ProjData['{}'.format(v10)].mean()
+    if v11:
+        Summary['{}'.format(t11)] = ProjData['{}'.format(v11)].mean()
+    if v12:
+        Summary['{}'.format(t12)] = ProjData['{}'.format(v12)].mean()
+    if v13:
+        Summary['{}'.format(t13)] = ProjData['{}'.format(v13)].mean()
+    if v14:
+        Summary['{}'.format(t14)] = ProjData['{}'.format(v14)].mean()
+    if v15:
+        Summary['{}'.format(t15)] = ProjData['{}'.format(v15)].mean()
+    if v16:
+        Summary['{}'.format(t16)] = ProjData['{}'.format(v16)].mean()
+    if v17:
+        Summary['{}'.format(t17)] = ProjData['{}'.format(v17)].mean()
+    if v18:
+        Summary['{}'.format(t18)] = ProjData['{}'.format(v18)].mean()
+    if v19:
+        Summary['{}'.format(t19)] = ProjData['{}'.format(v19)].mean()
+    if v20:
+        Summary['{}'.format(t20)] = ProjData['{}'.format(v20)].mean()
+
+    # FILTER TO BUFFER AREA
+    BuffData = buffer1.join(data.set_index('LSOA code (2011)'), on='LSOA21CD', how='left',
+                               validate='one_to_one')
+
+    # PROJECT AREA PERCENTAGES AND RATIOS
+    Buff1 = {'Area name': ['Buffer 1']}
+    BuffSummary = pd.DataFrame(Buff1)
+    BuffSummary['Mean IMD Decile'] = BuffData['{}'.format(alltotal)].mean()
+    if v1:
+        BuffSummary['{}'.format(t1)] = BuffData['{}'.format(v1)].mean()
+    if v2:
+        BuffSummary['{}'.format(t2)] = BuffData['{}'.format(v2)].mean()
+    if v3:
+        BuffSummary['{}'.format(t3)] = BuffData['{}'.format(v3)].mean()
+    if v4:
+        BuffSummary['{}'.format(t4)] = BuffData['{}'.format(v4)].mean()
+    if v5:
+        BuffSummary['{}'.format(t5)] = BuffData['{}'.format(v5)].mean()
+    if v6:
+        BuffSummary['{}'.format(t6)] = BuffData['{}'.format(v6)].mean()
+    if v7:
+        BuffSummary['{}'.format(t7)] = BuffData['{}'.format(v7)].mean()
+    if v8:
+        BuffSummary['{}'.format(t8)] = BuffData['{}'.format(v8)].mean()
+    if v9:
+        BuffSummary['{}'.format(t9)] = BuffData['{}'.format(v9)].mean()
+    if v10:
+        BuffSummary['{}'.format(t10)] = BuffData['{}'.format(v10)].mean()
+    if v11:
+        BuffSummary['{}'.format(t11)] = BuffData['{}'.format(v11)].mean()
+    if v12:
+        BuffSummary['{}'.format(t12)] = BuffData['{}'.format(v12)].mean()
+    if v13:
+        BuffSummary['{}'.format(t13)] = BuffData['{}'.format(v13)].mean()
+    if v14:
+        BuffSummary['{}'.format(t14)] = BuffData['{}'.format(v14)].mean()
+    if v15:
+        BuffSummary['{}'.format(t15)] = BuffData['{}'.format(v15)].mean()
+    if v16:
+        BuffSummary['{}'.format(t16)] = BuffData['{}'.format(v16)].mean()
+    if v17:
+        BuffSummary['{}'.format(t17)] = BuffData['{}'.format(v17)].mean()
+    if v18:
+        BuffSummary['{}'.format(t18)] = BuffData['{}'.format(v18)].mean()
+    if v19:
+        BuffSummary['{}'.format(t19)] = BuffData['{}'.format(v19)].mean()
+    if v20:
+        BuffSummary['{}'.format(t20)] = BuffData['{}'.format(v20)].mean()
+
+        # FILTER TO SECOND BUFFER AREA
+    Buff2Data = buffer2.join(data.set_index('LSOA code (2011)'), on='LSOA21CD', how='left',
+                            validate='one_to_one')
+
+    # PROJECT AREA PERCENTAGES AND RATIOS
+    Buff2 = {'Area name': ['Buffer 2']}
+    Buff2Summary = pd.DataFrame(Buff2)
+    Buff2Summary['Mean IMD Decile'] = Buff2Data['{}'.format(alltotal)].mean()
+    if v1:
+        Buff2Summary['{}'.format(t1)] = Buff2Data['{}'.format(v1)].mean()
+    if v2:
+        Buff2Summary['{}'.format(t2)] = Buff2Data['{}'.format(v2)].mean()
+    if v3:
+        Buff2Summary['{}'.format(t3)] = Buff2Data['{}'.format(v3)].mean()
+    if v4:
+        Buff2Summary['{}'.format(t4)] = Buff2Data['{}'.format(v4)].mean()
+    if v5:
+        Buff2Summary['{}'.format(t5)] = Buff2Data['{}'.format(v5)].mean()
+    if v6:
+        Buff2Summary['{}'.format(t6)] = Buff2Data['{}'.format(v6)].mean()
+    if v7:
+        Buff2Summary['{}'.format(t7)] = Buff2Data['{}'.format(v7)].mean()
+    if v8:
+        Buff2Summary['{}'.format(t8)] = Buff2Data['{}'.format(v8)].mean()
+    if v9:
+        Buff2Summary['{}'.format(t9)] = Buff2Data['{}'.format(v9)].mean()
+    if v10:
+        Buff2Summary['{}'.format(t10)] = Buff2Data['{}'.format(v10)].mean()
+    if v11:
+        Buff2Summary['{}'.format(t11)] = Buff2Data['{}'.format(v11)].mean()
+    if v12:
+        Buff2Summary['{}'.format(t12)] = Buff2Data['{}'.format(v12)].mean()
+    if v13:
+        Buff2Summary['{}'.format(t13)] = Buff2Data['{}'.format(v13)].mean()
+    if v14:
+        Buff2Summary['{}'.format(t14)] = Buff2Data['{}'.format(v14)].mean()
+    if v15:
+        Buff2Summary['{}'.format(t15)] = Buff2Data['{}'.format(v15)].mean()
+    if v16:
+        Buff2Summary['{}'.format(t16)] = Buff2Data['{}'.format(v16)].mean()
+    if v17:
+        Buff2Summary['{}'.format(t17)] = Buff2Data['{}'.format(v17)].mean()
+    if v18:
+        Buff2Summary['{}'.format(t18)] = Buff2Data['{}'.format(v18)].mean()
+    if v19:
+        Buff2Summary['{}'.format(t19)] = Buff2Data['{}'.format(v19)].mean()
+    if v20:
+        Buff2Summary['{}'.format(t20)] = Buff2Data['{}'.format(v20)].mean()
+
+    IMDResults = pd.concat([Summary, BuffSummary, Buff2Summary], ignore_index=True)
+    return IMDResults
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # APPLY FUNCTION TO DATASETS
 
+# RESULTS FILE DEFINITION
 resultsfile = r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/results.txt'
 
+# CAR AND VAN AVAILABILITY
 census_stats(Car_van, ProjLSOA, resultsfile, 'Car and van availability in the project area',
              'Number of cars or vans: Total: All households', 'Number of cars or vans: No cars or vans in household',
              'Percentage of households without a car or van in the project area',
@@ -389,6 +568,7 @@ census_stats(Car_van, BuffLSOA, resultsfile, 'Car and van availability in the 11
              'cars or vans in the buffer area','Number of cars or vans: 3 or more cars or vans in household',
              'Percentage of households with three or more cars of vans in the buffer area')
 
+# DWELLINGS
 census_stats(Dwellings, ProjLSOA, resultsfile, 'Dwelling types in the project area', 'Accommodation type: Total: '
             'All households', 'Accommodation type: Detached', 'Percentage of detached houses in the project area',
              'Accommodation type: Semi-detached', 'Percentage of semi-detached houses in the project area',
@@ -419,6 +599,7 @@ census_stats(Dwellings, BuffLSOA, resultsfile, 'Dwelling types in the 11 mile bu
                         'caravan or other mobile or temporary structure', 'Percentage of dwellings in a caravan or '
                         'other mobile or temporary structure in the buffer area')
 
+# DEPRIVATION DIMENSIONS
 census_stats(DeprivationDimensions, ProjLSOA, resultsfile, 'Household deprivation dimensions in the project area. '
                         '(Census 2021 estimates that classify households in England '
                         'and Wales by four dimensions of deprivation: Employment, '
@@ -449,6 +630,7 @@ census_stats(DeprivationDimensions, BuffLSOA, resultsfile, 'Household deprivatio
          'which are deprived in three dimensions', 'Household deprivation: Household is deprived in four dimensions; '
         'measures: Value', 'Percentage of households in the buffer area which are deprived in four dimensions')
 
+# HIGHEST LEVEL OF EDUCATION
 census_stats(HighestEd, ProjLSOA, resultsfile, 'Highest levels of education in the project area - residents aged 16 and'
     'over', 'Highest level of qualification: Total: All usual residents aged 16 years and over', 'Highest level of '
     'qualification: No qualifications', 'Percentage of residents in the project area with no qualifications', 'Highest '
@@ -473,6 +655,7 @@ census_stats(HighestEd, BuffLSOA, resultsfile, 'Highest levels of education in t
     'Percentage of residents in the buffer area with Level 4 qualifications and above', 'Highest level of '
      'qualification: Other qualifications', 'Percentage of residents in the buffer area with other qualifications')
 
+# ETHNICITY
 census_stats(Ethnicity, ProjLSOA, resultsfile, 'Ethnicity of residents in the project area', 'Ethnic group: Total: '
       'All usual residents', 'Ethnic group: Asian, Asian British or Asian Welsh', 'Percentage of residents in the '
       'project area who are Asian, Asian British or Asian Welsh', 'Ethnic group: Black, Black British, Black Welsh, '
@@ -495,6 +678,7 @@ census_stats(Ethnicity, BuffLSOA, resultsfile, 'Ethnicity of residents in the 11
       'of residents in the buffer area who are White Roma', 'Ethnic group: Other ethnic group', 'Percentage of '
       'residents in the buffer area from other ethnic groups')
 
+# HEALTH
 census_stats(Health, ProjLSOA, resultsfile, 'General health of residents in the project area',
        'General health: Total: All usual residents', 'General health: Very good health', 'Percentage of residents '
        'in the project area with very good health', 'General health: Good health', 'Percentage of residents in the '
@@ -509,6 +693,7 @@ census_stats(Health, BuffLSOA, resultsfile, 'General health of residents in the 
        'with fair health', 'General health: Bad health', 'Percentage of residents in the buffer area with bad health',
        'General health: Very bad health', 'Percentage of residents in the buffer area with very bad health')
 
+# DISABILITY
 census_stats(Disability, ProjLSOA, resultsfile, 'Disability in the project area',
              'Disability: Total: All usual residents', 'Disability: Disabled under the Equality Act', 'Percentage '
              'of residents in the project area who are disabled under the Equality Act', 'Disability: Disabled '
@@ -537,6 +722,7 @@ census_stats(Disability, BuffLSOA, resultsfile, 'Disability in the 11 mile buffe
              'disabled under the Equality Act: No long term physical or mental health conditions', 'Percentage of '
              'residents in the buffer area who have no long term physical or mental health conditions')
 
+# UNPAID CARE
 census_stats(UnpaidCare, ProjLSOA, resultsfile, 'Unpaid care provision in the project area (residents = all usual '
                                                 'residents aged 5 and over)',
              'Provision of unpaid care: Total: All usual residents aged 5 and over', 'Provision of unpaid care: '
@@ -557,6 +743,7 @@ census_stats(UnpaidCare, BuffLSOA, resultsfile, 'Unpaid care provision in the 11
              '20 to 49 hours unpaid care a week', 'Provision of unpaid care: Provides 50 or more hours unpaid care '
              'a week', 'Percentage of residents in the buffer area who provide 50 or more hours unpaid care a week')
 
+# HOURS WORKED
 census_stats(HoursWorked, ProjLSOA, resultsfile, 'Hours worked in the project area '
              '(residents 16+ and in employment 1 week before the census)',
              'Hours worked: Total: All usual residents aged 16 years and over in employment the week before the '
@@ -577,6 +764,7 @@ census_stats(HoursWorked, BuffLSOA, resultsfile, 'Hours worked in the 11 mile bu
              'worked: Full-time: 49 or more hours worked', 'Percentage of employed residents in the buffer area '
              'working 49+ hours')
 
+# HOUSEHOLD COMPOSITION
 census_stats(HouseholdComposition, ProjLSOA, resultsfile, 'Household composition in the project area',
              'Household composition: Total; measures: Value', 'Household composition: One person household; '
              'measures: Value', 'Percentage of households in the project area which are one person', 'Household '
@@ -661,6 +849,7 @@ census_stats(HouseholdComposition, BuffLSOA, resultsfile, 'Household composition
              'students and all aged 66 years and over; measures: Value', 'Percentage of households in the buffer area '
              'which are other household types including all full-time students and all aged 66+')
 
+# OCCUPATION
 census_stats(Occupation, ProjLSOA, resultsfile, 'Occupation of residents in the project area '
                                                 '(16+ and employed the week before the census)',
              'Occupation (current): Total: All usual residents aged 16 years and over in employment the week before '
@@ -689,6 +878,7 @@ census_stats(Occupation, BuffLSOA, resultsfile, 'Occupation of residents in the 
              'machine operatives', 'Process, plant and machine operatives', 'Occupation (current): 9. Elementary '
              'occupations', 'Elementary occupations')
 
+# LEGAL PARTNERSHIP
 census_stats(LegalPartnership, ProjLSOA, resultsfile, 'Legal partnership of residents in the project area',
              'Marital and civil partnership status: Total; measures: Value', 'Marital and civil partnership status: '
              'Never married and never registered a civil partnership; measures: Value', 'Never married and never '
@@ -717,6 +907,7 @@ census_stats(LegalPartnership, BuffLSOA, resultsfile, 'Legal partnership of resi
              'partnership status: Widowed or surviving civil partnership partner; measures: Value', 'Widowed or '
              'surviving civil partnership partner')
 
+# HOUSEHOLD LANGUAGE
 census_stats(HouseholdLanguage, ProjLSOA, resultsfile, 'English spoken per household in the project area',
              'Household language (English and Welsh): Total: All households', 'Household language (English and Welsh): '
              'All adults in household have English in England, or English or Welsh in Wales as a main language',
@@ -745,6 +936,7 @@ census_stats(HouseholdLanguage, BuffLSOA, resultsfile, 'English spoken per house
              'Welsh in Wales as a main language', 'No people in household have English in England, or English or '
              'Welsh in Wales as a main language')
 
+# NS-SEC WORK TYPES
 census_stats(NSEC, ProjLSOA, resultsfile, 'National Statistics Socio-economic Classification (NS-SEC) work types '
                                           'in the project area',
              'National Statistics Socio-economic Classification (NS-SEC): Total: All usual residents aged 16 years '
@@ -781,6 +973,7 @@ census_stats(NSEC, BuffLSOA, resultsfile, 'National Statistics Socio-economic Cl
              'Never worked and long-term unemployed', 'National Statistics Socio-economic Classification (NS-SEC): '
              'L15 Full-time students', 'Full-time students')
 
+# RELIGION
 census_stats(Religion, ProjLSOA, resultsfile, 'Religion of usual residents in the project area',
              'Religion: Total: All usual residents', 'Religion: No religion', 'No religion', 'Religion: Christian',
              'Christian', 'Religion: Buddhist', 'Buddhist', 'Religion: Hindu', 'Hindu', 'Religion: Jewish', 'Jewish',
@@ -793,6 +986,7 @@ census_stats(Religion, BuffLSOA, resultsfile, 'Religion of usual residents in th
              'Religion: Muslim', 'Muslim', 'Religion: Sikh', 'Sikh', 'Religion: Other religion', 'Other religion',
              'Religion: Not answered', 'Not answered')
 
+# TENURE
 census_stats(Tenure, ProjLSOA, resultsfile, 'Tenure of households in the project area',
              'Tenure of household: Total: All households', 'Tenure of household: Owned', 'Owned', 'Tenure of household:'
              ' Owned: Owns outright', 'Owned outright', 'Tenure of household: Owned: Owns with a mortgage or loan',
@@ -816,3 +1010,25 @@ census_stats(Tenure, BuffLSOA, resultsfile, 'Tenure of households in the 11 mile
              'Private rented (private landlord or letting agency)', 'Tenure of household: Private rented: Other '
              'private rented', 'Private rented (Other private rented)', 'Tenure of household: Lives rent free',
              'Lives rent free')
+
+# IMD
+IMD_stats(IMD, ProjLSOA, BuffLSOA, BuffLSOA, 'Index of Multiple Deprivation (IMD) Decile (where 1 is most deprived '
+          '10% of LSOAs)', 'Income Decile (where 1 is most deprived 10% of LSOAs)', 'Income Decile', 'Employment '
+          'Decile (where 1 is most deprived 10% of LSOAs)', 'Employment Decile', 'Education, Skills and Training '
+          'Decile (where 1 is most deprived 10% of LSOAs)', 'Education skills and training decile',
+          'Health Deprivation and Disability Decile (where 1 is most deprived 10% of LSOAs)',
+          'Health deprivation and disability decile', 'Crime Decile (where 1 is most deprived 10% of LSOAs)',
+          'Crime decile', 'Barriers to Housing and Services Decile (where 1 is most deprived 10% of LSOAs)',
+          'Barriers to Housing and Services Decile', 'Living Environment Decile (where 1 is most deprived 10% of'
+          ' LSOAs)', 'Living environment decile', 'Income Deprivation Affecting Children Index (IDACI) Decile '
+          '(where 1 is most deprived 10% of LSOAs)', 'Income Deprivation Affecting Children Index (IDACI) Decile',
+          'Income Deprivation Affecting Older People (IDAOPI) Decile (where 1 is most deprived 10% of LSOAs)',
+          'Income Deprivation Affecting Older People (IDAOPI) Decile', 'Children and Young People Sub-domain Decile '
+          '(where 1 is most deprived 10% of LSOAs)', 'Adult Skills Sub-domain Decile (where 1 is most deprived 10% of '
+          'LSOAs)', 'Geographical Barriers Sub-domain Decile (where 1 is most deprived 10% of LSOAs)', 'Geographical '
+          'Barriers Sub-domain Decile', 'Wider Barriers Sub-domain Decile (where 1 is most deprived 10% of LSOAs)',
+          'Wider Barriers Sub-domain Decile', 'Indoors Sub-domain Decile (where 1 is most deprived 10% of LSOAs)',
+          'Indoors Sub-domain Decile', 'Outdoors Sub-domain Decile (where 1 is most deprived 10% of LSOAs)',
+          'Outdoors Sub-domain Decile').to_csv(r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis '
+                                               r'private/IMD_results.csv')
+
