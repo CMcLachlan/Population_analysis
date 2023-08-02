@@ -1,148 +1,84 @@
 # POPULATION ANALYSIS PYTHON SCRIPT - ANALYSIS OF CENSUS AND IMD DATA FOR A DEFINED AREA
 
+# ---------------------------------------------------------------------------------------------------------------------
 # IMPORTS
 import geopandas as gpd
 import pandas as pd
 
+# ---------------------------------------------------------------------------------------------------------------------
 # READ FILES
-ProjectArea = gpd.read_file(r'C:/Users/charl/Documents/Essex Wildlife Trust/Population_analysis/Population_analysis/'
-                            r'files/Analysis_area.shp')
-ProjectBuffer = gpd.read_file(r'C:/Users/charl/Documents/Essex Wildlife Trust/Population_analysis/Population_analysis/'
-                              r'files/11_miles_buffer.shp')
+
 Car_van = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts045-lsoa.csv')
-LSOAs = gpd.read_file(r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/LSOA_2021_EW_BGC.shp')
+
 Dwellings = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts044-lsoaDwellingType.csv')
+
 Economic = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts066-lsoaEconomicActivity'
     r'.csv')
+
 DeprivationDimensions = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts011-lsoaDeprivation'
     r'Dimensions.csv')
+
 HighestEd = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts067-lsoaHighestEd.csv')
+
 Ethnicity = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts021-lsoaEthnicity.csv')
+
 Health = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts037-lsoaHealth.csv')
+
 Disability = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts038-lsoaDisability.csv')
+
 UnpaidCare = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts039-lsoaUnpaidCare.csv')
+
 HoursWorked = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts059-lsoaHoursWorked.csv')
+
 HouseholdComposition = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts003-lsoaHousehold'
     r'Composition.csv')
+
 Occupation = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts063-lsoaOccupation.csv')
+
 LegalPartnership = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts002-'
     r'lsoaLegalPartnership.csv')
+
 HouseholdLanguage = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts025-lsoaLanguage.csv')
+
 NSEC = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts062-lsoaNS-SeC.csv')
+
 Religion = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts030-lsoaReligion.csv')
+
 Tenure = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/census2021-ts054-lsoaTenure.csv')
 
-# CLIP LSOAs TO PROJECT AREA AND BUFFER AREA
-ProjLSOAs = gpd.clip(LSOAs, ProjectArea)
-BuffLSOAs = gpd.clip(LSOAs, ProjectBuffer)
 
-ProjLSOAs.to_file(r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/ProjLSOAs.shp')
-BuffLSOAs.to_file(r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/BuffLSOAs.shp')
-
-# USE ARCPRO EXTRACTED ROWS TO FILTER
+# ---------------------------------------------------------------------------------------------------------------------
+# ARCPRO EXTRACTED ROWS TO BE USED IN FILTERING DATA TO APPROPRIATE AREAS
 ProjLSOA = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/ProjLSOAs.csv')
 BuffLSOA = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/BuffLSOAs.csv')
 
-# FILTER DATA TO APPROPRIATE AREA(S)
-ProjCarVan = ProjLSOA.join(Car_van.set_index('geography code'), on='LSOA21CD', how='left',
-                      validate='one_to_one')
-BuffCarVan = BuffLSOA.join(Car_van.set_index('geography code'), on='LSOA21CD', how='left',
-                      validate='one_to_one')
-"""
-# ALL DATA CAR AND VAN PERCENTAGES
-TotalAll = Car_van['Number of cars or vans: Total: All households'].sum()
-TotalNoCarVan = Car_van['Number of cars or vans: No cars or vans in household'].sum()
-Total1CarVan = Car_van['Number of cars or vans: 1 car or van in household'].sum()
-Total2CarVan = Car_van['Number of cars or vans: 2 cars or vans in household'].sum()
-Total3CarVan = Car_van['Number of cars or vans: 3 or more cars or vans in household'].sum()
-
-PerTotalNoCarVan = (TotalNoCarVan/TotalAll)*100
-PerTotal1CarVan = (Total1CarVan/TotalAll)*100
-PerTotal2CarVan = (Total2CarVan/TotalAll)*100
-PerTotal3CarVan = (Total3CarVan/TotalAll)*100
-
-# PROJECT AREA CAR AND VAN PERCENTAGES
-ProjAll = ProjCarVan['Number of cars or vans: Total: All households'].sum()
-ProjNoCarVan = ProjCarVan['Number of cars or vans: No cars or vans in household'].sum()
-Proj1CarVan = ProjCarVan['Number of cars or vans: 1 car or van in household'].sum()
-Proj2CarVan = ProjCarVan['Number of cars or vans: 2 cars or vans in household'].sum()
-Proj3CarVan = ProjCarVan['Number of cars or vans: 3 or more cars or vans in household'].sum()
-
-PerProjNoCarVan = (ProjNoCarVan/ProjAll)*100
-PerProj1CarVan = (Proj1CarVan/ProjAll)*100
-PerProj2CarVan = (Proj2CarVan/ProjAll)*100
-PerProj3CarVan = (Proj3CarVan/ProjAll)*100
-
-RatioProjNoCar = PerProjNoCarVan/PerTotalNoCarVan
-RatioProj1Car = PerProj1CarVan/PerTotal1CarVan
-RatioProj2Car = PerProj2CarVan/PerTotal2CarVan
-RatioProj3Car = PerProj3CarVan/PerTotal3CarVan
-
-# BUFFER AREA CAR AND VAN PERCENTAGES
-BuffAll = BuffCarVan['Number of cars or vans: Total: All households'].sum()
-BuffNoCarVan = BuffCarVan['Number of cars or vans: No cars or vans in household'].sum()
-Buff1CarVan = BuffCarVan['Number of cars or vans: 1 car or van in household'].sum()
-Buff2CarVan = BuffCarVan['Number of cars or vans: 2 cars or vans in household'].sum()
-Buff3CarVan = BuffCarVan['Number of cars or vans: 3 or more cars or vans in household'].sum()
-
-PerBuffNoCarVan = (BuffNoCarVan/BuffAll)*100
-PerBuff1CarVan = (Buff1CarVan/BuffAll)*100
-PerBuff2CarVan = (Buff2CarVan/BuffAll)*100
-PerBuff3CarVan = (Buff3CarVan/BuffAll)*100
-
-RatioBuffNoCar = PerBuffNoCarVan/PerTotalNoCarVan
-RatioBuff1Car = PerBuff1CarVan/PerTotal1CarVan
-RatioBuff2Car = PerBuff2CarVan/PerTotal2CarVan
-RatioBuff3Car = PerBuff3CarVan/PerTotal3CarVan
-
-results = open(r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/results.txt', "w")
-results.write('Car and van availability - project area \n')
-results.write('Percentage of households without a car or van in the project area: {:.2f}%, {:.2f} times the national '
-              'percentage. \n'.format(PerProjNoCarVan, RatioProjNoCar))
-results.write('Percentage of households with one car or van in the project area: {:.2f}%, {:.2f} times the national '
-              'percentage. \n'.format(PerProj1CarVan, RatioProj1Car))
-results.write('Percentage of households with two cars or vans in the project area: {:.2f}%, {:.2f} times the national '
-              'percentage. \n'.format(PerProj2CarVan, RatioProj2Car))
-results.write('Percentage of households with three or more cars or vans in the project area: {:.2f}%, {:.2f} times the '
-              'national percentage. \n'.format(PerProj3CarVan, RatioProj3Car))
-results.write('\nCar and van availability - 11 mile buffer \n')
-results.write('Percentage of households without a car or van in the buffer area: {:.2f}%, {:.2f} times the national '
-              'percentage. \n'.format(PerBuffNoCarVan, RatioBuffNoCar))
-results.write('Percentage of households with one car or van in the buffer area: {:.2f}%, {:.2f} times the national '
-              'percentage. \n'.format(PerBuff1CarVan, RatioBuff1Car))
-results.write('Percentage of households with two cars or vans in the buffer area: {:.2f}%, {:.2f} times the national '
-              'percentage. \n'.format(PerBuff2CarVan, RatioBuff2Car))
-results.write('Percentage of households with three or more cars or vans in the buffer area: {:.2f}%, {:.2f} times the '
-              'national percentage. \n'.format(PerBuff3CarVan, RatioBuff3Car))
-results.close()
-"""
-ProjCarVan.to_csv(r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/ProjCarVan.csv')
-
+# ---------------------------------------------------------------------------------------------------------------------
+# WRITE FUNCTION
 def census_stats(data, proj, resultfile, section, all, v1, t1, v2, t2, v3, t3, v4, t4, v5=None, t5=None, v6=None,
                  t6=None, v7=None, t7=None, v8=None, t8=None, v9=None, t9=None, v10=None, t10=None, v11=None, t11=None,
                  v12=None, t12=None, v13=None, t13=None, v14=None, t14=None, v15=None, t15=None, v16=None, t16=None,
                  v17=None, t17=None, v18=None, t18=None, v19=None, t19=None, v20=None, t20=None):
     """
-    Given a dataset containing up to 17 variables, a dataframe of LSOAs based on a project area and a dataframe of LSOAs
+    Given a dataset containing up to 20 variables, a dataframe of LSOAs based on a project area and a dataframe of LSOAs
     based on a buffer area, calculate percentages for each variable for each area, calculate the relative ratio of
     the percentages compared to the national dataset, and write (append) the results to a text file.
     :param data: dataframe
@@ -432,8 +368,11 @@ def census_stats(data, proj, resultfile, section, all, v1, t1, v2, t2, v3, t3, v
     results = updatedresults
     return results
 
+# ---------------------------------------------------------------------------------------------------------------------
+# APPLY FUNCTION TO DATASETS
 
 resultsfile = r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/results.txt'
+
 census_stats(Car_van, ProjLSOA, resultsfile, 'Car and van availability in the project area',
              'Number of cars or vans: Total: All households', 'Number of cars or vans: No cars or vans in household',
              'Percentage of households without a car or van in the project area',
