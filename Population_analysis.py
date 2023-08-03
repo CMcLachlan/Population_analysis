@@ -72,6 +72,8 @@ ProjLSOA = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/ProjLSOAs.csv')
 BuffLSOA = pd.read_csv(
     r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/BuffLSOAs.csv')
+Buff2LSOA = pd.read_csv(
+    r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/Buff8LSOAs.csv')
 
 # ---------------------------------------------------------------------------------------------------------------------
 # DEFINE FUNCTIONS
@@ -448,7 +450,7 @@ def IMD_stats(data, proj, buffer1, buffer2, alltotal, v1, t1, v2, t2, v3, t3, v4
                                validate='one_to_one')
 
     # PROJECT AREA PERCENTAGES AND RATIOS
-    Buff1 = {'Area name': ['Buffer 1']}
+    Buff1 = {'Area name': ['4 mile buffer']}
     BuffSummary = pd.DataFrame(Buff1)
     BuffSummary['Mean IMD Decile'] = BuffData['{}'.format(alltotal)].mean()
     if v1:
@@ -497,7 +499,7 @@ def IMD_stats(data, proj, buffer1, buffer2, alltotal, v1, t1, v2, t2, v3, t3, v4
                             validate='one_to_one')
 
     # PROJECT AREA PERCENTAGES AND RATIOS
-    Buff2 = {'Area name': ['Buffer 2']}
+    Buff2 = {'Area name': ['8 mile buffer']}
     Buff2Summary = pd.DataFrame(Buff2)
     Buff2Summary['Mean IMD Decile'] = Buff2Data['{}'.format(alltotal)].mean()
     if v1:
@@ -551,6 +553,17 @@ def IMD_stats(data, proj, buffer1, buffer2, alltotal, v1, t1, v2, t2, v3, t3, v4
 # RESULTS FILE DEFINITION
 resultsfile = r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/results.txt'
 
+result = open(resultsfile, "w")
+result.write('These results have been calculated from 2021 Census data from Nomis - provided by Office for National '
+             'Statistics  (https://www.nomisweb.co.uk/census/2021/bulk). \nData has been filtered by Lower Super '
+             'Output Area (LSOA). "Project area" refers to the LSOAs which have their centre within the project '
+             'boundary. "4 mile buffer" refers to the LSOAs which have their centre between 0 and 4 miles outside '
+             'the project boundary. "8 mile buffer" refers to the LSOAs which have their centre between 4 and 8 miles '
+             'outside the project boundary. This ensures that, where an LSOA is intersected by the project boundary '
+             'or buffer boundary, it is only analysed once - within the zone that the majority of its area falls '
+             'within. \n')
+result.close()
+
 # CAR AND VAN AVAILABILITY
 census_stats(Car_van, ProjLSOA, resultsfile, 'Car and van availability in the project area',
              'Number of cars or vans: Total: All households', 'Number of cars or vans: No cars or vans in household',
@@ -560,7 +573,15 @@ census_stats(Car_van, ProjLSOA, resultsfile, 'Car and van availability in the pr
              'cars or vans in the project area','Number of cars or vans: 3 or more cars or vans in household',
              'Percentage of households with three or more cars of vans in the project area')
 
-census_stats(Car_van, BuffLSOA, resultsfile, 'Car and van availability in the 11 mile buffer area',
+census_stats(Car_van, BuffLSOA, resultsfile, 'Car and van availability in the 4 mile buffer area',
+             'Number of cars or vans: Total: All households', 'Number of cars or vans: No cars or vans in household',
+             'Percentage of households without a car or van in the buffer area',
+             'Number of cars or vans: 1 car or van in household', 'Percentage of households with one car or van in the '
+             'buffer area', 'Number of cars or vans: 2 cars or vans in household', 'Percentage of households with two '
+             'cars or vans in the buffer area','Number of cars or vans: 3 or more cars or vans in household',
+             'Percentage of households with three or more cars of vans in the buffer area')
+
+census_stats(Car_van, Buff2LSOA, resultsfile, 'Car and van availability in the 8 mile buffer area',
              'Number of cars or vans: Total: All households', 'Number of cars or vans: No cars or vans in household',
              'Percentage of households without a car or van in the buffer area',
              'Number of cars or vans: 1 car or van in household', 'Percentage of households with one car or van in the '
@@ -584,7 +605,22 @@ census_stats(Dwellings, ProjLSOA, resultsfile, 'Dwelling types in the project ar
                         'caravan or other mobile or temporary structure', 'Percentage of dwellings in a caravan or '
                         'other mobile or temporary structure in the project area')
 
-census_stats(Dwellings, BuffLSOA, resultsfile, 'Dwelling types in the 11 mile buffer area', 'Accommodation type: Total:'
+census_stats(Dwellings, BuffLSOA, resultsfile, 'Dwelling types in the 4 mile buffer area', 'Accommodation type: Total:'
+            ' All households', 'Accommodation type: Detached', 'Percentage of detached houses in the buffer area',
+             'Accommodation type: Semi-detached', 'Percentage of semi-detached houses in the buffer area',
+             'Accommodation type: Terraced', 'Percentage of terraced houses in the buffer area', 'Accommodation type: '
+            'In a purpose-built block of flats or tenement', 'Percentage of dwellings in a purpose-built block of flats'
+            ' or tenement in the buffer area', 'Accommodation type: Part of a converted or shared house, including '
+            'bedsits', 'Percentage of dwellings in part of a converted or shared house, including bedsits, in the '
+                       'buffer area', 'Accommodation type: Part of another converted building, for example, former '
+                        'school, church or warehouse', 'Percentage of dwellings in part of another converted building '
+                        'in the buffer area', 'Accommodation type: In a commercial building, for example, in an office'
+                        ' building, hotel or over a shop', 'Percentage of dwellings in a commercial building in the '
+                        'buffer area (e.g. in an office building, hotel or over a shop', 'Accommodation type: A '
+                        'caravan or other mobile or temporary structure', 'Percentage of dwellings in a caravan or '
+                        'other mobile or temporary structure in the buffer area')
+
+census_stats(Dwellings, Buff2LSOA, resultsfile, 'Dwelling types in the 8 mile buffer area', 'Accommodation type: Total:'
             ' All households', 'Accommodation type: Detached', 'Percentage of detached houses in the buffer area',
              'Accommodation type: Semi-detached', 'Percentage of semi-detached houses in the buffer area',
              'Accommodation type: Terraced', 'Percentage of terraced houses in the buffer area', 'Accommodation type: '
@@ -615,7 +651,22 @@ census_stats(DeprivationDimensions, ProjLSOA, resultsfile, 'Household deprivatio
          'which are deprived in three dimensions', 'Household deprivation: Household is deprived in four dimensions; '
         'measures: Value', 'Percentage of households in the project area which are deprived in four dimensions')
 
-census_stats(DeprivationDimensions, BuffLSOA, resultsfile, 'Household deprivation dimensions in the 11 mile buffer'
+census_stats(DeprivationDimensions, BuffLSOA, resultsfile, 'Household deprivation dimensions in the 4 mile buffer'
+                                                           ' area. (Census 2021 estimates that classify households in England '
+                                                           'and Wales by four dimensions of deprivation: Employment, '
+                                                           'education, health and disability, and household '
+                                                           'overcrowding. The estimates are as at Census Day, 21 March '
+                                                           '2021.)', 'Household deprivation: Total: All households; '
+    'measures: Value', 'Household deprivation: Household is not deprived in any dimension; measures: Value', 'Percentage'
+     ' of households in the buffer area which are not deprived in any dimension', 'Household deprivation: Household is'
+     ' deprived in one dimension; measures: Value', 'Percentage of households in the buffer area which are deprived '
+        'in one dimension', 'Household deprivation: Household is deprived in two dimensions; measures: Value',
+        'Percentage of households in the buffer area which are deprived in two dimensions', 'Household deprivation: '
+         'Household is deprived in three dimensions; measures: Value', 'Percentage of households in the buffer area '
+         'which are deprived in three dimensions', 'Household deprivation: Household is deprived in four dimensions; '
+        'measures: Value', 'Percentage of households in the buffer area which are deprived in four dimensions')
+
+census_stats(DeprivationDimensions, Buff2LSOA, resultsfile, 'Household deprivation dimensions in the 8 mile buffer'
                                                            ' area. (Census 2021 estimates that classify households in England '
                                                            'and Wales by four dimensions of deprivation: Employment, '
                                                            'education, health and disability, and household '
@@ -643,7 +694,19 @@ census_stats(HighestEd, ProjLSOA, resultsfile, 'Highest levels of education in t
     'with Level 4 qualifications and above', 'Highest level of qualification: Other qualifications', 'Percentage '
     'of residents in the project area with other qualifications')
 
-census_stats(HighestEd, BuffLSOA, resultsfile, 'Highest levels of education in the 11 mile buffer area - residents '
+census_stats(HighestEd, BuffLSOA, resultsfile, 'Highest levels of education in the 4 mile buffer area - residents '
+    'aged 16 and over', 'Highest level of qualification: Total: All usual residents aged 16 years and over',
+     'Highest level of qualification: No qualifications', 'Percentage of residents in the buffer area with no '
+     'qualifications', 'Highest level of qualification: Level 1 and entry level qualifications', 'Percentage of '
+     'residents in the buffer area with Level 1 and entry level qualifications', 'Highest level of qualification: '
+     'Level 2 qualifications', 'Percentage of residents in the buffer area with Level 2 qualifications', 'Highest '
+     'level of qualification: Apprenticeship', 'Percentage of residents in the buffer area that have completed an '
+     'apprenticeship', 'Highest level of qualification: Level 3 qualifications', 'Percentage of residents in the '
+     'buffer area with Level 3 qualifications', 'Highest level of qualification: Level 4 qualifications and above',
+    'Percentage of residents in the buffer area with Level 4 qualifications and above', 'Highest level of '
+     'qualification: Other qualifications', 'Percentage of residents in the buffer area with other qualifications')
+
+census_stats(HighestEd, Buff2LSOA, resultsfile, 'Highest levels of education in the 8 mile buffer area - residents '
     'aged 16 and over', 'Highest level of qualification: Total: All usual residents aged 16 years and over',
      'Highest level of qualification: No qualifications', 'Percentage of residents in the buffer area with no '
      'qualifications', 'Highest level of qualification: Level 1 and entry level qualifications', 'Percentage of '
@@ -667,7 +730,18 @@ census_stats(Ethnicity, ProjLSOA, resultsfile, 'Ethnicity of residents in the pr
       'of residents in the project area who are White Roma', 'Ethnic group: Other ethnic group', 'Percentage of '
       'residents in the project area from other ethnic groups')
 
-census_stats(Ethnicity, BuffLSOA, resultsfile, 'Ethnicity of residents in the 11 mile buffer area', 'Ethnic group: '
+census_stats(Ethnicity, BuffLSOA, resultsfile, 'Ethnicity of residents in the 4 mile buffer area', 'Ethnic group: '
+      'Total: All usual residents', 'Ethnic group: Asian, Asian British or Asian Welsh', 'Percentage of residents in '
+      'the buffer area who are Asian, Asian British or Asian Welsh', 'Ethnic group: Black, Black British, Black Welsh,'
+      ' Caribbean or African', 'Percentage of residents in the buffer area who are Black, Black British, Black '
+      'Welsh, Caribbean or African', 'Ethnic group: Mixed or Multiple ethnic groups', 'Percentage of residents in '
+      'the buffer area from mixed or multiple ethnic groups', 'Ethnic group: White', 'Percentage of residents in '
+      'the buffer area who are White', 'Ethnic group: White: Gypsy or Irish Traveller', 'Percentage of residents '
+      'in the buffer area who are White Gypsy or Irish Traveller', 'Ethnic group: White: Roma', 'Percentage '
+      'of residents in the buffer area who are White Roma', 'Ethnic group: Other ethnic group', 'Percentage of '
+      'residents in the buffer area from other ethnic groups')
+
+census_stats(Ethnicity, Buff2LSOA, resultsfile, 'Ethnicity of residents in the 8 mile buffer area', 'Ethnic group: '
       'Total: All usual residents', 'Ethnic group: Asian, Asian British or Asian Welsh', 'Percentage of residents in '
       'the buffer area who are Asian, Asian British or Asian Welsh', 'Ethnic group: Black, Black British, Black Welsh,'
       ' Caribbean or African', 'Percentage of residents in the buffer area who are Black, Black British, Black '
@@ -686,7 +760,14 @@ census_stats(Health, ProjLSOA, resultsfile, 'General health of residents in the 
        'with fair health', 'General health: Bad health', 'Percentage of residents in the project area with bad health',
         'General health: Very bad health', 'Percentage of residents in the project area with very bad health')
 
-census_stats(Health, BuffLSOA, resultsfile, 'General health of residents in the 11 mile buffer area',
+census_stats(Health, BuffLSOA, resultsfile, 'General health of residents in the 4 mile buffer area',
+       'General health: Total: All usual residents', 'General health: Very good health', 'Percentage of residents '
+       'in the buffer area with very good health', 'General health: Good health', 'Percentage of residents in the '
+       'buffer area with good health', 'General health: Fair health', 'Percentage of residents in the buffer area '
+       'with fair health', 'General health: Bad health', 'Percentage of residents in the buffer area with bad health',
+       'General health: Very bad health', 'Percentage of residents in the buffer area with very bad health')
+
+census_stats(Health, Buff2LSOA, resultsfile, 'General health of residents in the 8 mile buffer area',
        'General health: Total: All usual residents', 'General health: Very good health', 'Percentage of residents '
        'in the buffer area with very good health', 'General health: Good health', 'Percentage of residents in the '
        'buffer area with good health', 'General health: Fair health', 'Percentage of residents in the buffer area '
@@ -708,7 +789,21 @@ census_stats(Disability, ProjLSOA, resultsfile, 'Disability in the project area'
              'disabled under the Equality Act: No long term physical or mental health conditions', 'Percentage of '
              'residents in the project area who have no long term physical or mental health conditions')
 
-census_stats(Disability, BuffLSOA, resultsfile, 'Disability in the 11 mile buffer area',
+census_stats(Disability, BuffLSOA, resultsfile, 'Disability in the 4 mile buffer area',
+             'Disability: Total: All usual residents', 'Disability: Disabled under the Equality Act', 'Percentage '
+             'of residents in the buffer area who are disabled under the Equality Act', 'Disability: Disabled '
+             'under the Equality Act: Day-to-day activities limited a lot', 'Percentage of residents in the buffer '
+             'area who are disabled and whose day-to-day activities are limited a lot', 'Disability: Disabled '
+             'under the Equality Act: Day-to-day activities limited a little', 'Percentage of residents in the buffer '
+             'area who are disabled and whose day-to-day activities are limited a little', 'Disability: Not disabled '
+             'under the Equality Act', 'Percentage of residents in the buffer area who are not disabled under the '
+             'Equality Act', 'Disability: Not disabled under the Equality Act: Has long term physical or mental '
+             'health condition but day-to-day activities are not limited', 'Percentage of residents in the buffer '
+             'area who are not disabled but have a long term physical or mental health condition', 'Disability: Not '
+             'disabled under the Equality Act: No long term physical or mental health conditions', 'Percentage of '
+             'residents in the buffer area who have no long term physical or mental health conditions')
+
+census_stats(Disability, Buff2LSOA, resultsfile, 'Disability in the 8 mile buffer area',
              'Disability: Total: All usual residents', 'Disability: Disabled under the Equality Act', 'Percentage '
              'of residents in the buffer area who are disabled under the Equality Act', 'Disability: Disabled '
              'under the Equality Act: Day-to-day activities limited a lot', 'Percentage of residents in the buffer '
@@ -733,7 +828,17 @@ census_stats(UnpaidCare, ProjLSOA, resultsfile, 'Unpaid care provision in the pr
              '20 to 49 hours unpaid care a week', 'Provision of unpaid care: Provides 50 or more hours unpaid care '
              'a week', 'Percentage of residents in the project area who provide 50 or more hours unpaid care a week')
 
-census_stats(UnpaidCare, BuffLSOA, resultsfile, 'Unpaid care provision in the 11 mile buffer area (residents = all '
+census_stats(UnpaidCare, BuffLSOA, resultsfile, 'Unpaid care provision in the 4 mile buffer area (residents = all '
+                                                'usual residents aged 5 and over)',
+             'Provision of unpaid care: Total: All usual residents aged 5 and over', 'Provision of unpaid care: '
+             'Provides no unpaid care', 'Percentage of residents in the buffer area who do not provide unpaid care',
+             'Provision of unpaid care: Provides 19 hours or less unpaid care a week', 'Percentage of residents '
+             'in the buffer area who provide 19 hours or less unpaid care a week', 'Provision of unpaid care: '
+             'Provides 20 to 49 hours unpaid care a week', 'Percentage of residents in the buffer area who provide '
+             '20 to 49 hours unpaid care a week', 'Provision of unpaid care: Provides 50 or more hours unpaid care '
+             'a week', 'Percentage of residents in the buffer area who provide 50 or more hours unpaid care a week')
+
+census_stats(UnpaidCare, Buff2LSOA, resultsfile, 'Unpaid care provision in the 8 mile buffer area (residents = all '
                                                 'usual residents aged 5 and over)',
              'Provision of unpaid care: Total: All usual residents aged 5 and over', 'Provision of unpaid care: '
              'Provides no unpaid care', 'Percentage of residents in the buffer area who do not provide unpaid care',
@@ -754,7 +859,17 @@ census_stats(HoursWorked, ProjLSOA, resultsfile, 'Hours worked in the project ar
              'worked: Full-time: 49 or more hours worked', 'Percentage of employed residents in the project area '
              'working 49+ hours')
 
-census_stats(HoursWorked, BuffLSOA, resultsfile, 'Hours worked in the 11 mile buffer area '
+census_stats(HoursWorked, BuffLSOA, resultsfile, 'Hours worked in the 4 mile buffer area '
+             '(residents 16+ and in employment 1 week before the census)',
+             'Hours worked: Total: All usual residents aged 16 years and over in employment the week before the '
+             'census', 'Hours worked: Part-time: 15 hours or less worked', 'Percentage of employed residents in the '
+             'buffer area working 15 hours or less', 'Hours worked: Part-time: 16 to 30 hours worked', 'Percentage '
+             'of employed residents in the buffer area working 16-30 hours', 'Hours worked: Full-time: 31 to 48 '
+             'hours worked', 'Percentage of employed residents in the buffer area working 31-48 hours', 'Hours '
+             'worked: Full-time: 49 or more hours worked', 'Percentage of employed residents in the buffer area '
+             'working 49+ hours')
+
+census_stats(HoursWorked, Buff2LSOA, resultsfile, 'Hours worked in the 8 mile buffer area '
              '(residents 16+ and in employment 1 week before the census)',
              'Hours worked: Total: All usual residents aged 16 years and over in employment the week before the '
              'census', 'Hours worked: Part-time: 15 hours or less worked', 'Percentage of employed residents in the '
@@ -807,7 +922,49 @@ census_stats(HouseholdComposition, ProjLSOA, resultsfile, 'Household composition
              'students and all aged 66 years and over; measures: Value', 'Percentage of households in the project area '
              'which are other household types including all full-time students and all aged 66+')
 
-census_stats(HouseholdComposition, BuffLSOA, resultsfile, 'Household composition in the 11 mile buffer area',
+census_stats(HouseholdComposition, BuffLSOA, resultsfile, 'Household composition in the 4 mile buffer area',
+             'Household composition: Total; measures: Value', 'Household composition: One person household; '
+             'measures: Value', 'Percentage of households in the buffer area which are one person', 'Household '
+             'composition: One person household: Aged 66 years and over; measures: Value', 'Percentage of households '
+             'in the buffer area of one person aged 66 and over', 'Household composition: One person household: '
+             'Other; measures: Value', 'Percentage of households in the buffer area of one person 65 and under',
+             'Household composition: Single family household; measures: Value', 'Percentage of households in the '
+             'buffer area which are single-family', 'Household composition: Single family household: All aged '
+             '66 years and over; measures: Value', 'Percentage of households in the buffer area which are '
+             'single-family all aged 66 and over', 'Household composition: Single family household: Married or '
+             'civil partnership couple; measures: Value', 'Percentage of households in the buffer area which are '
+             'single-family including a married or civil-partnership couple', 'Household composition: Single family '
+             'household: Married or civil partnership couple: No children; measures: Value', 'Percentage of households '
+             'in the buffer area which are single-family - married or civil partnership couple with no children',
+             'Household composition: Single family household: Married or civil partnership couple: Dependent children; '
+             'measures: Value', 'Percentage of households in the buffer area which are single-family - married or '
+             'civil partnership couple with dependent children', 'Household composition: Single family household: '
+             'Married or civil partnership couple: All children non-dependent; measures: Value', 'Percentage of '
+             'households in the buffer area which are single-family - married or civil partnership couple with '
+             'all children non-dependent', 'Household composition: Single family household: Cohabiting couple family; '
+             'measures: Value', 'Percentage of households in the buffer area which are single-family including '
+             'a cohabiting couple', 'Household composition: Single family household: Cohabiting couple family: No '
+             'children; measures: Value', 'Percentage of households in the buffer area which are single-family - '
+             'cohabiting couple with no children', 'Household composition: Single family household: Cohabiting couple '
+             'family: With dependent children; measures: Value', 'Percentage of households in the buffer area which '
+             'are single-family - cohabiting couple with dependent children', 'Household composition: Single family '
+             'household: Cohabiting couple family: All children non-dependent; measures: Value', 'Percentage of '
+             'households in the buffer area which are single-family - cohabiting couple with all children '
+             'non-dependent', 'Household composition: Single family household: Lone parent family; measures: Value',
+             'Percentage of households in the buffer area which are single-family with a lone parent', 'Household '
+             'composition: Single family household: Lone parent family: With dependent children; measures: Value',
+             'Percentage of households in the buffer area which are single-family - lone parent with dependent '
+             'children', 'Household composition: Single family household: Lone parent family: All children '
+             'non-dependent; measures: Value', 'Percentage of households in the buffer area with a single lone-parent'
+             ' family where all children are non-dependent', 'Household composition: Single family household: Other '
+             'single family household; measures: Value', 'Percentage of households in the buffer area which are '
+             'other single-family households', 'Household composition: Other household types: With dependent children; '
+             'measures: Value', 'Percentage of households in the buffer area which are other household types with '
+             'dependent children', 'Household composition: Other household types: Other, including all full-time '
+             'students and all aged 66 years and over; measures: Value', 'Percentage of households in the buffer area '
+             'which are other household types including all full-time students and all aged 66+')
+
+census_stats(HouseholdComposition, Buff2LSOA, resultsfile, 'Household composition in the 8 mile buffer area',
              'Household composition: Total; measures: Value', 'Household composition: One person household; '
              'measures: Value', 'Percentage of households in the buffer area which are one person', 'Household '
              'composition: One person household: Aged 66 years and over; measures: Value', 'Percentage of households '
@@ -864,7 +1021,21 @@ census_stats(Occupation, ProjLSOA, resultsfile, 'Occupation of residents in the 
              'machine operatives', 'Process, plant and machine operatives', 'Occupation (current): 9. Elementary '
              'occupations', 'Elementary occupations')
 
-census_stats(Occupation, BuffLSOA, resultsfile, 'Occupation of residents in the 11 mile buffer area '
+census_stats(Occupation, BuffLSOA, resultsfile, 'Occupation of residents in the 4 mile buffer area '
+                                                '(16+ and employed the week before the census)',
+             'Occupation (current): Total: All usual residents aged 16 years and over in employment the week before '
+             'the census', 'Occupation (current): 1. Managers, directors and senior officials', 'Managers, directors '
+             'and senior officials', 'Occupation (current): 2. Professional occupations', 'Professional occupations',
+             'Occupation (current): 3. Associate professional and technical occupations', 'Associate professional and '
+             'technical occupations', 'Occupation (current): 4. Administrative and secretarial occupations',
+             'Administrative and secretarial occupations', 'Occupation (current): 5. Skilled trades occupations',
+             'Skilled trades occupations', 'Occupation (current): 6. Caring, leisure and other service occupations',
+             'Caring, leisure and other service occupations', 'Occupation (current): 7. Sales and customer service '
+             'occupations', 'Sales and customer service occupations', 'Occupation (current): 8. Process, plant and '
+             'machine operatives', 'Process, plant and machine operatives', 'Occupation (current): 9. Elementary '
+             'occupations', 'Elementary occupations')
+
+census_stats(Occupation, Buff2LSOA, resultsfile, 'Occupation of residents in the 8 mile buffer area '
                                                 '(16+ and employed the week before the census)',
              'Occupation (current): Total: All usual residents aged 16 years and over in employment the week before '
              'the census', 'Occupation (current): 1. Managers, directors and senior officials', 'Managers, directors '
@@ -893,7 +1064,21 @@ census_stats(LegalPartnership, ProjLSOA, resultsfile, 'Legal partnership of resi
              'partnership status: Widowed or surviving civil partnership partner; measures: Value', 'Widowed or '
              'surviving civil partnership partner')
 
-census_stats(LegalPartnership, BuffLSOA, resultsfile, 'Legal partnership of residents in the 11 mile buffer area',
+census_stats(LegalPartnership, BuffLSOA, resultsfile, 'Legal partnership of residents in the 4 mile buffer area',
+             'Marital and civil partnership status: Total; measures: Value', 'Marital and civil partnership status: '
+             'Never married and never registered a civil partnership; measures: Value', 'Never married and never '
+             'registered a civil partnership', 'Marital and civil partnership status: Married or in a registered '
+             'civil partnership: Married; measures: Value', 'Married', 'Marital and civil partnership status: Married '
+             'or in a registered civil partnership: Married: Same sex; measures: Value', 'Married (same sex marriage)',
+             'Marital and civil partnership status: Married or in a registered civil partnership: In a registered '
+             'civil partnership: Same sex; measures: Value', 'In a same sex registered civil partnership', 'Marital '
+             'and civil partnership status: Separated, but still legally married or still legally in a civil '
+             'partnership; measures: Value', 'Separated', 'Marital and civil partnership status: Divorced or civil '
+             'partnership dissolved; measures: Value', 'Divorced or civil partnership dissolved', 'Marital and civil '
+             'partnership status: Widowed or surviving civil partnership partner; measures: Value', 'Widowed or '
+             'surviving civil partnership partner')
+
+census_stats(LegalPartnership, Buff2LSOA, resultsfile, 'Legal partnership of residents in the 8 mile buffer area',
              'Marital and civil partnership status: Total; measures: Value', 'Marital and civil partnership status: '
              'Never married and never registered a civil partnership; measures: Value', 'Never married and never '
              'registered a civil partnership', 'Marital and civil partnership status: Married or in a registered '
@@ -922,7 +1107,21 @@ census_stats(HouseholdLanguage, ProjLSOA, resultsfile, 'English spoken per house
              'Welsh in Wales as a main language', 'No people in household have English in England, or English or '
              'Welsh in Wales as a main language')
 
-census_stats(HouseholdLanguage, BuffLSOA, resultsfile, 'English spoken per household in the 11 mile buffer area',
+census_stats(HouseholdLanguage, BuffLSOA, resultsfile, 'English spoken per household in the 4 mile buffer area',
+             'Household language (English and Welsh): Total: All households', 'Household language (English and Welsh): '
+             'All adults in household have English in England, or English or Welsh in Wales as a main language',
+             'All adults in household have English in England, or English or Welsh in Wales as a main language',
+             'Household language (English and Welsh): At least one but not all adults in household have English in '
+             'England, or English or Welsh in Wales as a main language', 'At least one but not all adults in household '
+             'have English in England, or English or Welsh in Wales as a main language', 'Household language (English '
+             'and Welsh): No adults in household, but at least one person aged 3 to 15 years, has English in England '
+             'or English or Welsh in Wales as a main language', 'No adults in household, but at least one person aged '
+             '3 to 15 years, has English in England or English or Welsh in Wales as a main language',
+             'Household language (English and Welsh): No people in household have English in England, or English or '
+             'Welsh in Wales as a main language', 'No people in household have English in England, or English or '
+             'Welsh in Wales as a main language')
+
+census_stats(HouseholdLanguage, Buff2LSOA, resultsfile, 'English spoken per household in the 8 mile buffer area',
              'Household language (English and Welsh): Total: All households', 'Household language (English and Welsh): '
              'All adults in household have English in England, or English or Welsh in Wales as a main language',
              'All adults in household have English in England, or English or Welsh in Wales as a main language',
@@ -956,7 +1155,25 @@ census_stats(NSEC, ProjLSOA, resultsfile, 'National Statistics Socio-economic Cl
              'L15 Full-time students', 'Full-time students')
 
 census_stats(NSEC, BuffLSOA, resultsfile, 'National Statistics Socio-economic Classification (NS-SEC) work types '
-                                          'in the 11 mile buffer area',
+                                          'in the 4 mile buffer area',
+             'National Statistics Socio-economic Classification (NS-SEC): Total: All usual residents aged 16 years '
+             'and over', 'National Statistics Socio-economic Classification (NS-SEC): L1, L2 and L3 Higher managerial, '
+             'administrative and professional occupations', 'Higher managerial, administrative and professional '
+             'occupations', 'National Statistics Socio-economic Classification (NS-SEC): L4, L5 and L6 Lower '
+             'managerial, administrative and professional occupations', 'Lower managerial, administrative and '
+             'professional occupations', 'National Statistics Socio-economic Classification (NS-SEC): L7 Intermediate '
+             'occupations', 'Intermediate occupations', 'National Statistics Socio-economic Classification (NS-SEC): '
+             'L8 and L9 Small employers and own account workers', 'Small employers and own account workers', 'National '
+             'Statistics Socio-economic Classification (NS-SEC): L10 and L11 Lower supervisory and technical '
+             'occupations', 'Lower supervisory and technical occupations', 'National Statistics Socio-economic '
+             'Classification (NS-SEC): L12 Semi-routine occupations', 'Semi-routine occupations', 'National Statistics '
+             'Socio-economic Classification (NS-SEC): L13 Routine occupations', 'Routine occupations', 'National '
+             'Statistics Socio-economic Classification (NS-SEC): L14.1 and L14.2 Never worked and long-term unemployed',
+             'Never worked and long-term unemployed', 'National Statistics Socio-economic Classification (NS-SEC): '
+             'L15 Full-time students', 'Full-time students')
+
+census_stats(NSEC, Buff2LSOA, resultsfile, 'National Statistics Socio-economic Classification (NS-SEC) work types '
+                                           'in the 8 mile buffer area',
              'National Statistics Socio-economic Classification (NS-SEC): Total: All usual residents aged 16 years '
              'and over', 'National Statistics Socio-economic Classification (NS-SEC): L1, L2 and L3 Higher managerial, '
              'administrative and professional occupations', 'Higher managerial, administrative and professional '
@@ -980,7 +1197,13 @@ census_stats(Religion, ProjLSOA, resultsfile, 'Religion of usual residents in th
              'Religion: Muslim', 'Muslim', 'Religion: Sikh', 'Sikh', 'Religion: Other religion', 'Other religion',
              'Religion: Not answered', 'Not answered')
 
-census_stats(Religion, BuffLSOA, resultsfile, 'Religion of usual residents in the 11 mile buffer area',
+census_stats(Religion, BuffLSOA, resultsfile, 'Religion of usual residents in the 4 mile buffer area',
+             'Religion: Total: All usual residents', 'Religion: No religion', 'No religion', 'Religion: Christian',
+             'Christian', 'Religion: Buddhist', 'Buddhist', 'Religion: Hindu', 'Hindu', 'Religion: Jewish', 'Jewish',
+             'Religion: Muslim', 'Muslim', 'Religion: Sikh', 'Sikh', 'Religion: Other religion', 'Other religion',
+             'Religion: Not answered', 'Not answered')
+
+census_stats(Religion, Buff2LSOA, resultsfile, 'Religion of usual residents in the 8 mile buffer area',
              'Religion: Total: All usual residents', 'Religion: No religion', 'No religion', 'Religion: Christian',
              'Christian', 'Religion: Buddhist', 'Buddhist', 'Religion: Hindu', 'Hindu', 'Religion: Jewish', 'Jewish',
              'Religion: Muslim', 'Muslim', 'Religion: Sikh', 'Sikh', 'Religion: Other religion', 'Other religion',
@@ -999,7 +1222,19 @@ census_stats(Tenure, ProjLSOA, resultsfile, 'Tenure of households in the project
              'private rented', 'Private rented (Other private rented)', 'Tenure of household: Lives rent free',
              'Lives rent free')
 
-census_stats(Tenure, BuffLSOA, resultsfile, 'Tenure of households in the 11 mile buffer area',
+census_stats(Tenure, BuffLSOA, resultsfile, 'Tenure of households in the 4 mile buffer area',
+             'Tenure of household: Total: All households', 'Tenure of household: Owned', 'Owned', 'Tenure of household:'
+             ' Owned: Owns outright', 'Owned outright', 'Tenure of household: Owned: Owns with a mortgage or loan',
+             'Owned with a mortgage or loan', 'Tenure of household: Shared ownership', 'Shared ownership', 'Tenure of '
+             'household: Social rented', 'Social rented (all)', 'Tenure of household: Social rented: Rents from '
+             'council or Local Authority', 'Social rented from council or Local Authority', 'Tenure of household: '
+             'Social rented: Other social rented', 'Social rented (other)', 'Tenure of household: Private rented',
+             'Private rented (all)', 'Tenure of household: Private rented: Private landlord or letting agency',
+             'Private rented (private landlord or letting agency)', 'Tenure of household: Private rented: Other '
+             'private rented', 'Private rented (Other private rented)', 'Tenure of household: Lives rent free',
+             'Lives rent free')
+
+census_stats(Tenure, Buff2LSOA, resultsfile, 'Tenure of households in the 8 mile buffer area',
              'Tenure of household: Total: All households', 'Tenure of household: Owned', 'Owned', 'Tenure of household:'
              ' Owned: Owns outright', 'Owned outright', 'Tenure of household: Owned: Owns with a mortgage or loan',
              'Owned with a mortgage or loan', 'Tenure of household: Shared ownership', 'Shared ownership', 'Tenure of '
@@ -1032,3 +1267,80 @@ IMD_stats(IMD, ProjLSOA, BuffLSOA, BuffLSOA, 'Index of Multiple Deprivation (IMD
           'Outdoors Sub-domain Decile').to_csv(r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis '
                                                r'private/IMD_results.csv')
 
+# POPULATION BY AGE FROM IMD
+
+AllAge = {'Area name': ['TotalEngland']}
+AllAges = pd.DataFrame(AllAge)
+AllAges['Total population mid 2015'] = IMD['Total population: mid 2015 (excluding prisoners)'].sum()
+AllAges['Dependent Children aged 0-15 mid 2015'] = IMD['Dependent Children aged 0-15: mid 2015 ' \
+                                                                '(excluding prisoners)'].sum()
+AllAges['Population aged 16-59 mid 2015'] = IMD['Population aged 16-59: mid 2015 (excluding prisoners)'].sum()
+AllAges['Population aged 60 and over mid 2015'] = IMD['Older population aged 60 and over: mid 2015 ' \
+                                                               '(excluding prisoners)'].sum()
+AllAges['Working age population 18-59/64'] = IMD['Working age population 18-59/64: for use with Employment ' \
+                                                          'Deprivation Domain (excluding prisoners) '].sum()
+
+ProjData = ProjLSOA.join(IMD.set_index('LSOA code (2011)'), on='LSOA21CD', how='left',
+                               validate='one_to_one')
+ProjAges = {'Area name': ['Project area']}
+ProjectAges = pd.DataFrame(ProjAges)
+ProjectAges['Total population mid 2015'] = ProjData['Total population: mid 2015 (excluding prisoners)'].sum()
+ProjectAges['Dependent Children aged 0-15 mid 2015'] = ProjData['Dependent Children aged 0-15: mid 2015 ' \
+                                                                '(excluding prisoners)'].sum()
+ProjectAges['Population aged 16-59 mid 2015'] = ProjData['Population aged 16-59: mid 2015 (excluding prisoners)'].sum()
+ProjectAges['Population aged 60 and over mid 2015'] = ProjData['Older population aged 60 and over: mid 2015 ' \
+                                                               '(excluding prisoners)'].sum()
+ProjectAges['Working age population 18-59/64'] = ProjData['Working age population 18-59/64: for use with Employment ' \
+                                                          'Deprivation Domain (excluding prisoners) '].sum()
+
+Buffer1Data = BuffLSOA.join(IMD.set_index('LSOA code (2011)'), on='LSOA21CD', how='left',
+                               validate='one_to_one')
+Buff1Ages = {'Area name': ['4 mile buffer']}
+Buffer1Ages = pd.DataFrame(Buff1Ages)
+Buffer1Ages['Total population mid 2015'] = Buffer1Data['Total population: mid 2015 (excluding prisoners)'].sum()
+Buffer1Ages['Dependent Children aged 0-15 mid 2015'] = Buffer1Data['Dependent Children aged 0-15: mid 2015 ' \
+                                                                '(excluding prisoners)'].sum()
+Buffer1Ages['Population aged 16-59 mid 2015'] = Buffer1Data['Population aged 16-59: mid 2015 (excluding prisoners)'].sum()
+Buffer1Ages['Population aged 60 and over mid 2015'] = Buffer1Data['Older population aged 60 and over: mid 2015 ' \
+                                                               '(excluding prisoners)'].sum()
+Buffer1Ages['Working age population 18-59/64'] = Buffer1Data['Working age population 18-59/64: for use with Employment ' \
+                                                          'Deprivation Domain (excluding prisoners) '].sum()
+
+Buffer2Data = Buff2LSOA.join(IMD.set_index('LSOA code (2011)'), on='LSOA21CD', how='left',
+                               validate='one_to_one')
+Buff2Ages = {'Area name': ['8 mile buffer']}
+Buffer2Ages = pd.DataFrame(Buff2Ages)
+Buffer2Ages['Total population mid 2015'] = Buffer2Data['Total population: mid 2015 (excluding prisoners)'].sum()
+Buffer2Ages['Dependent Children aged 0-15 mid 2015'] = Buffer2Data['Dependent Children aged 0-15: mid 2015 ' \
+                                                                '(excluding prisoners)'].sum()
+Buffer2Ages['Population aged 16-59 mid 2015'] = Buffer2Data['Population aged 16-59: mid 2015 (excluding prisoners)'].sum()
+Buffer2Ages['Population aged 60 and over mid 2015'] = Buffer2Data['Older population aged 60 and over: mid 2015 ' \
+                                                               '(excluding prisoners)'].sum()
+Buffer2Ages['Working age population 18-59/64'] = Buffer2Data['Working age population 18-59/64: for use with Employment ' \
+                                                          'Deprivation Domain (excluding prisoners) '].sum()
+
+Ages = pd.concat([AllAges, ProjectAges, Buffer1Ages, Buffer2Ages], ignore_index=True)
+Ages['Percentage of dependent children 0-15'] = (Ages['Dependent Children aged 0-15 mid 2015']/Ages['Total population '
+                                                                                                    'mid 2015'])*100
+Ages['Percentage of population aged 16-59'] = (Ages['Population aged 16-59 mid 2015']/Ages['Total population '
+                                                                                                    'mid 2015'])*100
+Ages['Percentage of population aged 60 and over'] = (Ages['Population aged 60 and over mid 2015']/Ages['Total '
+                                                                                                       'population '
+                                                                                                    'mid 2015'])*100
+Ages['Percentage of population working age'] = (Ages['Working age population 18-59/64']/Ages['Total '
+                                                                                                       'population '
+                                                                                                    'mid 2015'])*100
+EngDep = float(Ages.loc[Ages['Area name'] == 'TotalEngland', 'Percentage of dependent children 0-15'])
+Eng16 = float(Ages.loc[Ages['Area name'] == 'TotalEngland', 'Percentage of population aged 16-59'])
+Eng60 = float(Ages.loc[Ages['Area name'] == 'TotalEngland', 'Percentage of population aged 60 and over'])
+EngEmp = float(Ages.loc[Ages['Area name'] == 'TotalEngland', 'Percentage of population working age'])
+
+Ages['Ratio dependent children compared to England'] = Ages['Percentage of dependent children 0-15']/EngDep
+
+Ages['Ratio 16-59 compared to England'] = Ages['Percentage of population aged 16-59']/Eng16
+
+Ages['Ratio 60 and over compared to England'] = Ages['Percentage of population aged 60 and over']/Eng60
+
+Ages['Ratio working age compared to England'] = Ages['Percentage of population working age']/EngEmp
+
+Ages.to_csv(r'C:/Users/charl/Documents/Essex Wildlife Trust/Population analysis private/Ages_from_IMD.csv')
