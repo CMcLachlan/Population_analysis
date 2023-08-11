@@ -558,7 +558,7 @@ result.write('These results have been calculated from 2021 Census data from Nomi
              'Statistics  (https://www.nomisweb.co.uk/census/2021/bulk). \nData has been filtered by Lower Super '
              'Output Area (LSOA). "Project area" refers to the LSOAs which have their centre within the project '
              'boundary. "4 mile buffer" refers to the LSOAs which have their centre between 0 and 4 miles outside '
-             'the project boundary. "8 mile buffer" refers to the LSOAs which have their centre between 4 and 8 miles '
+             'the project boundary. "8 mile buffer" refers to the LSOAs which have their centre between 0 and 8 miles '
              'outside the project boundary. This ensures that, where an LSOA is intersected by the project boundary '
              'or buffer boundary, it is only analysed once - within the zone that the majority of its area falls '
              'within. \n')
@@ -1247,7 +1247,7 @@ census_stats(Tenure, Buff2LSOA, resultsfile, 'Tenure of households in the 8 mile
              'Lives rent free')
 
 # IMD
-IMD_stats(IMD, ProjLSOA, BuffLSOA, BuffLSOA, 'Index of Multiple Deprivation (IMD) Decile (where 1 is most deprived '
+IMD_stats(IMD, ProjLSOA, BuffLSOA, Buff2LSOA, 'Index of Multiple Deprivation (IMD) Decile (where 1 is most deprived '
           '10% of LSOAs)', 'Income Decile (where 1 is most deprived 10% of LSOAs)', 'Income Decile', 'Employment '
           'Decile (where 1 is most deprived 10% of LSOAs)', 'Employment Decile', 'Education, Skills and Training '
           'Decile (where 1 is most deprived 10% of LSOAs)', 'Education skills and training decile',
